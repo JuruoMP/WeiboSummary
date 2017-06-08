@@ -160,19 +160,26 @@ def export_data(file_path):
         print(repr(label_set), file=fw)
 
 if __name__ == '__main__':
+    '''
+    Training part
+    '''
     # export_data('data.data')
     # exit(-1)
-    # print('Training feature normalizer parameters...')
-    # train_feature_normalizer('data.data')
-    # print('Training leader detection model...')
-    # train('data.data', arch='LSTM')
-    # print('Evaluating...')
-    # eval_result = eval_or_test('eval.data', arch='MLP', mode='EVAL')
-    # with open('eval.result', 'w', encoding='utf-8') as fw:
-    #     for line in eval_result:
-    #         print(line, file=fw)
+    print('Training feature normalizer parameters...')
+    train_feature_normalizer('demo_data.txt')
+    print('Training leader detection model...')
+    train('demo_data.txt', arch='MLP')
+    print('Evaluating...')
+    eval_result = eval_or_test('demo_data.txt', arch='MLP', mode='EVAL')
+    with open('eval.result', 'w', encoding='utf-8') as fw:
+        for line in eval_result:
+            print(line, file=fw)
+
+    '''
+    Evaluating part
+    '''
     print('Running...')
-    with open(os.path.join('..', 'WeiboDataset', 'db', 'leader_output.txt'), 'w', encoding='utf-8') as fw:
+    with open(os.path.join('..', 'data', 'db', 'leader_output.txt'), 'w', encoding='utf-8') as fw:
         file_list = glob.glob(os.path.join('..', 'WeiboDataset', 'weibo', '*.txt'))
         eval_result = eval_or_test(file_list, arch='MLP', mode='TEST')
         for line in eval_result:

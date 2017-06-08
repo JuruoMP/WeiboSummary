@@ -208,6 +208,7 @@ def find_similiar(model, target, sentences, text_util=None, k=5, n=-1):
         d = sentence_dist(model, target, sentence, text_util=text_util, mode='WMD')
         top_k.append((sentence, d))
     top_k = sorted(top_k, key=lambda x: x[1])
+    return top_k  # TODO: DEBUG HERE
     return top_k[:k]
 
 
@@ -242,6 +243,4 @@ if __name__ == '__main__':
     print('target: %s' % ''.join(lines[1]))
     for sentence, dist in top_k:
         print('%.3f\t%s' % (dist, sentence))
-
-
 

@@ -18,6 +18,7 @@ neg_vocabs = []
 pos_vocabs = []
 stop_words = []
 
+
 def read_file(file_name):
     lines = []
     with codecs.open(file_name, 'r', encoding='utf-8') as read_file_handler:
@@ -31,6 +32,7 @@ def read_file(file_name):
             else:
                 lines.append(line.strip())
     return lines
+
 
 def calc_sentiment(line):
     def seg_sentence(sentence, seg_words):
@@ -65,6 +67,7 @@ def calc_sentiment(line):
         if explain: print('\t%f\t%s' % (score, seg), file=sys.stderr)
         total_score += score
     return total_score
+
 
 # Load vocab list
 seg_words = [x for x in read_file(os.path.join('vocab', 'seg.txt')) if len(x.split()) == 1]

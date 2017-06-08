@@ -23,7 +23,7 @@ import matplotlib.pyplot as plt
 """  
 
 stop_words = set()
-with open('stop_words.txt', 'r', encoding='utf-8') as fr:
+with open(os.path.join('..', 'data', 'lda', 'stop_words.txt'), 'r', encoding='utf-8') as fr:
     lines = fr.readlines()
     for line in lines:
         if not line or not line.strip():
@@ -55,7 +55,7 @@ def strip_stop_words(words):
 
 
 raw_documents = []
-with open('LCSTS_test.input', 'r', encoding='utf-8') as fr:
+with open(os.path.join('..', 'data', 'LCSTS_test.input'), 'r', encoding='utf-8') as fr:
     while True:
         try:
             line = fr.readline()
@@ -99,7 +99,13 @@ for document_word in seged_documents:
 
 perplexity_dict = {}
 
-for n_topics in range(3, 100, 3):
+
+'''
+便利3-100的主题数，计算perplexity，找到最适合的主题数
+在当前数据集上的最优主题数为21
+'''
+#for n_topics in range(3, 100, 3):
+for n_topics in range(18, 22):
     # documents: len(documents) * len(vocab), X[i]: count of each document
     # vocabs: tuple, storing each words
     model = lda.LDA(n_topics=n_topics, n_iter=2400, random_state=1)
