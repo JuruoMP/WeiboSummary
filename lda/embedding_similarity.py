@@ -200,14 +200,15 @@ def find_similiar(model, target, sentences, text_util=None, k=5, n=-1):
         d = sentence_dist(model, target, sentence, text_util=text_util, mode='WCD')
         approximate_dist[''.join(sentence)] = d
     approximate_dist = sorted(approximate_dist.items(), key=lambda x: x[1])
-    top_k = approximate_dist[:k]
     # end_pos = n if n != -1 else 10 * k
     end_pos = n if n != -1 else len(approximate_dist)
+    top_k = []
     print('k=%d, end_pos=%d' % (k, end_pos))
-    for sentence, _ in approximate_dist[k:end_pos]:
+    for sentence, _ in approximate_dist[:end_pos]:
         d = sentence_dist(model, target, sentence, text_util=text_util, mode='WMD')
-        top_k = compare_top_k(top_k, sentence, d)
-    return top_k
+        top_k.append((sentence, d))
+    top_k = sorted(top_k, key=lambda x: x[1])
+    return top_k[:k]
 
 
 if __name__ == '__main__':
