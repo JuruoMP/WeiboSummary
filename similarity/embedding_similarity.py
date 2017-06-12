@@ -48,6 +48,7 @@ class TextUtil(object):
                         '“', '”', '’', '‘', '：', '；'])
     def __init__(self, stop_word_path):
         self.stop_words = set()
+        assert os.path.exists(stop_word_path)
         with open(stop_word_path, 'r', encoding='utf-8') as fr:
             while True:
                 line = fr.readline()
@@ -182,6 +183,10 @@ def sentence_dist(model, sentence1, sentence2, text_util=None, mode='WMD'):
 
 
 def find_similiar(model, target, sentences, text_util=None, k=5, n=-1):
+    '''
+    k: 返回结果的个数
+    n: 使用取前多少个使用WCD算法得到的优结果进行WMD计算
+    '''
     if text_util:
         target = text_util.strip_stop_words(target)
         sentences_content = [text_util.strip_stop_words(x) for x in sentences]
@@ -208,7 +213,7 @@ def find_similiar(model, target, sentences, text_util=None, k=5, n=-1):
         d = sentence_dist(model, target, sentence, text_util=text_util, mode='WMD')
         top_k.append((sentence, d))
     top_k = sorted(top_k, key=lambda x: x[1])
-    return top_k  # TODO: DEBUG HERE
+    # return top_k  # TODO: DEBUG HERE
     return top_k[:k]
 
 
@@ -229,7 +234,7 @@ if __name__ == '__main__':
     # Test embedding
     # print(model.similar_by_vector(model['肯德基'], topn=10, restrict_vocab=None))
     # Calculate distance between sentences
-    stop_word_path = 'stop_words.txt'
+    stop_word_path = os.path.join('..', 'data', 'stop_words.txt')
     text_util = TextUtil(stop_word_path)
     sentence1 = '肯德基炸鸡翅很好吃'
     sentence2 = '美味的肯德基香辣鸡翅'
@@ -237,10 +242,13 @@ if __name__ == '__main__':
     print(d)
 
     # Find similar sentences
-    test_sentence_iter = SentencesIter(file_path, [file_name[1]])
+    test_sentence_iter = SentencesIter(file_path, [file_name[0]])
     lines = [_ for _ in test_sentence_iter]
-    top_k = find_similiar(model, lines[1], lines[2:], text_util)
-    print('target: %s' % ''.join(lines[1]))
-    for sentence, dist in top_k:
-        print('%.3f\t%s' % (dist, sentence))
-
+    top_k = find_similiar(model, lines[1], lines[2:], text_util, k=20, n=500)
+    # print('target: %s' % ''.join(lines[1]))
+    # for sentence, dist in top_k:
+    #     print('%.3f\t%s' % (dist, sentence))
+    with open('result.txt', 'w', encoding='utf-8') as fw:
+        print('target: %s' % ''.join(lines[1]), file=fw)
+        for sentence, dist in top_k:
+            print('%.3f\t%s' % (dist, sentence), file=fw)

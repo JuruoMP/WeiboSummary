@@ -23,7 +23,7 @@ import matplotlib.pyplot as plt
 """  
 
 stop_words = set()
-with open(os.path.join('..', 'data', 'lda', 'stop_words.txt'), 'r', encoding='utf-8') as fr:
+with open(os.path.join('..', 'data', 'stop_words.txt'), 'r', encoding='utf-8') as fr:
     lines = fr.readlines()
     for line in lines:
         if not line or not line.strip():
